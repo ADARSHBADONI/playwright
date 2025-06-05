@@ -51,7 +51,20 @@ test('client app login',async ({page})=>{
     
     expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
     await page.locator(".action__submit").click();
-    await expect(page.locator(".hero-primary")).toHaveText(" Thnkyou for the order. ");
-    //const orderID= await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
-    //console.log(orderID);
-})
+    await expect(page.locator(".hero-primary")).toHaveText("Thankyou for the order.");
+    const orderID= await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+    console.log(orderID);
+
+    await page.locator("button[ routerlink*='myorders']").click();
+    await page.locator("tbody").waitFor();
+    const rows = page.locator('tbody tr');
+    for(let i=0 ; i<await rows.count();i++){
+        const roworderid = await rows.nth(i).locator('th').textContent();
+        if(orderID.includes(roworderid)){
+            await rows.nth(i).locator('button').first().click();
+            break;
+        }
+    }
+    const orderiddetails = await page.locator('.col-text').textContent();
+    expect(orderID.includes(orderiddetails)).toBeTruthy();
+});
