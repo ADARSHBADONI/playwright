@@ -1,6 +1,6 @@
 const{test,expect}=require('@playwright/test');
 
-
+//This is a basic test
 test('Browser context Playright test',async ({browser})=>
 {
     //chrome-plugins/cookies
