@@ -35,10 +35,11 @@ test('this api test',async ({page})=>
 
     });
     await page.locator("button[ routerlink*='myorders']").click();
-    await page.pause();
+    page.waitForResponse("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*");
+    console.log(await page.locator(".mt-4").textContent());
     // await page.locator("tbody").waitFor();
     // const rows = page.locator('tbody tr');
-    // for(let i=0 ; i<await rows.count();i++){
+    // for(let i=0 ; i<await rows.count();i++){a
     //     const roworderid = await rows.nth(i).locator('th').textContent();
     //     if(response.orderId.includes(roworderid)){
     //         await rows.nth(i).locator('button').first().click();
