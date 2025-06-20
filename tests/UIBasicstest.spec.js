@@ -1,4 +1,5 @@
 const{test,expect}=require('@playwright/test');
+const { request } = require('http');
 
 //This is a basic test
 test('Browser context Playright test',async ({browser})=>
@@ -6,10 +7,13 @@ test('Browser context Playright test',async ({browser})=>
     //chrome-plugins/cookies
     const context = await browser.newContext();
     const page= await context.newPage();
+    page.route('**/*.{jpg,png,jpeg}',route=>route.abort());
     const UserName = page.locator('#username');
     const Password = page.locator("[type='password']")
     const SignIn = page.locator('#signInBtn')
     const cardtitle = page.locator('.card-body a');
+    page.on('request',request=>console.log(request.url()))
+    page.on('response',response=>console.log(response.url(),response.status()));
     
    
     await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
@@ -36,7 +40,7 @@ test ('Ui controls',async ({page})=>
     const UserName = page.locator('#username');
     const Password = page.locator("[type='password']")
     const SignIn = page.locator('#signInBtn')
-    const documentLink = page.locator("[href*='documents-request']");
+    const documentLink = page.locator("[href*='documents-']");request
 
     const dropdown =  page.locator('select.form-control');
     await dropdown.selectOption('Teacher');
