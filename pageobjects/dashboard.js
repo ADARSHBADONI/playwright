@@ -21,10 +21,13 @@ class dashboard
                     break;
                 }
             }
+
     }
 
     async navigateToCart(){
         await this.cart.click()
+        
     }
+
 }
 module.exports ={dashboard}

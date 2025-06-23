@@ -13,31 +13,23 @@ test('client app login',async ({page})=>{
     const obj1 = manager.getdashboardpage();
     await obj1.searchproductAddCart(productName);
     await obj1.navigateToCart();
-
-
-
-    //console.log(await cardtitles.first().textContent());
     
 
-    await page.locator('div li').first().waitFor();
-    const bool= await page.locator("h3:has-text('ZARA COAT 3')").isVisible();
-    expect (bool).toBeTruthy()
-    await page.locator("text=checkout").click();
-    await page.locator('.small input ').first().fill("234");
-    await page.locator("input[type='text']").nth(2).fill("adarsh");
-    await page.locator("[placeholder*='Select Country']").pressSequentially("Ind");
-    const dropdown = page.locator('.ta-results')
-    await dropdown.waitFor();
-    const optioncount = await dropdown.locator("button").count();
-    
-    console.log(optioncount);
-    for(let i=0 ; i< optioncount ; ++i){
-        const text = await dropdown.locator("button").nth(i).textContent();
-        if( text === ' India'){
-            await dropdown.locator("button").nth(i).click();
-            break;
-        }
-    }
+    const cartPage = manager.getCartPage();
+    await cartPage.VerifyProductIsDisplayed(productName);
+    await cartPage.Checkout();
+
+    await page.locator("[placeholder*='Country']").pressSequentially("ind");
+   const dropdown = page.locator(".ta-results");
+   await dropdown.waitFor();
+   const optionsCount = await dropdown.locator("button").count();
+   for (let i = 0; i < optionsCount; ++i) {
+      const text = await dropdown.locator("button").nth(i).textContent();
+      if (text === " India") {
+         await dropdown.locator("button").nth(i).click();
+         break;
+      }
+   }
     
     expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
     await page.locator(".action__submit").click();
