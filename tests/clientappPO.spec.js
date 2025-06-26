@@ -1,22 +1,23 @@
 const{test,expect}=require('@playwright/test');
 import { PoManager } from '../pageobjects/poManager';
+import { customtest } from './utils/test-base.js';
 
-test('client app login',async ({page})=>{
-    
+//json ->string ->javascript object
+const dataset =  JSON.parse(JSON.stringify(require("./utils/placeOrderTestData.json")));
+for (const data of dataset){
+test(`client app login ${data.productName}`,async ({page})=>{
+    console.log(dataset);
     const manager = new PoManager(page);
-    const productName = "ZARA COAT 3";
-    const email = "adarshbadoni420@gmail.com";
-    const pass = 'Adarsh@123'
     const OBJ = manager.getLoginPage();
     await OBJ.goTo()
-    await OBJ.validLogin(email,pass)
+    await OBJ.validLogin(data.email,data.pass)
     const obj1 = manager.getdashboardpage();
-    await obj1.searchproductAddCart(productName);
+    await obj1.searchproductAddCart(data.productName);
     await obj1.navigateToCart();
     
 
     const cartPage = manager.getCartPage();
-    await cartPage.VerifyProductIsDisplayed(productName);
+    await cartPage.VerifyProductIsDisplayed(data.productName);
     await cartPage.Checkout();
 
     const ordersReviewPage = manager.getorderReview();
@@ -27,4 +28,21 @@ test('client app login',async ({page})=>{
    const ordersHistoryPage = manager.getorderhistory();
    await ordersHistoryPage.searchOrderAndSelect(orderId);
    expect(orderId.includes(await ordersHistoryPage.getOrderId())).toBeTruthy();
+});
+}
+
+customtest.only('client app login' ,async ({page,testDataForOrder})=>{
+    const manager = new PoManager(page);
+    const OBJ = manager.getLoginPage();
+    await OBJ.goTo()
+    await OBJ.validLogin(testDataForOrder.email,testDataForOrder.pass)
+    const obj1 = manager.getdashboardpage();
+    await obj1.searchproductAddCart(testDataForOrder.productName);
+    await obj1.navigateToCart();
+    
+
+    const cartPage = manager.getCartPage();
+    await cartPage.VerifyProductIsDisplayed(testDataForOrder.productName);
+    await cartPage.Checkout();
+
 });
